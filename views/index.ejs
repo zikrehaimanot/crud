@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Favorite Harry Potter Quotes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+  <h1>Post Your Favorite Harry Potter Quotes</h1>
+
+  </section>
+  <section>
+    <h2> Sumbit the Name of the Character You're Quoting and the Quote</h2>
+  </section>
+
+  <form action="/quotes" method="POST">
+    <input type="text" placeholder="name" name="name">
+    <input type="text" placeholder="quote" name="quote">
+    <button type="submit">Submit</button>
+
+    </form>
+    <section id="quote">
+
+
+    <ul class="quotes">
+    <% for(var i=0; i<quotes.length; i++) {%>
+      <li class="quote">
+        <span><%= quotes[i].name %></span>
+        <span><%= quotes[i].quote %></span>
+      </li>
+    <% } %>
+    </ul>
+  </section>
+  <section  id="buttons">
+    <button type="button" name="button" id="update">Voldermort Quote That Interests Me</button>
+    <button id="delete"> I'm Sick Of Voldermort Delete Voldermort quote</button>
+  </section>
+  <section>
+    <span>If you post a Voldermort quote and are curious what my favorite quote by Tom Riddle is press the button above after you post yours</span>
+
+  </section>
+<script type="text/javascript" src="main.js"></script>
+</body>
+</html>

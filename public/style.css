@@ -1,0 +1,26 @@
+*{
+  box-sizing: border-box;
+}
+body{
+  background-image: url(hp.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+form{
+  display: flex;
+  justify-content: center;
+}
+section{
+  display: flex;
+  justify-content: center;
+  color: #B22222;
+  font-size: 30px;
+}
+#buttons{
+  display: flex;
+  justify-content: center;
+}
+#quote{
+  color: black;
+}

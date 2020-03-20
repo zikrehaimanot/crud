@@ -5,58 +5,54 @@ const app = express()
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://resilientcoders:bossox94@potter-quotes-g61rv.mongodb.net/test?retryWrites=true&w=majority";
 
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
 
 var db
 
-MongoClient.connect(uri, (err, client) => {
+app.listen(process.env.PORT || 3000, () => {
+MongoClient.connect(uri,{ useNewUrlParser: true }, (err, database) => {
   if (err) return console.log(err)
-  db = client.db('potter-quotes')
-  app.listen(4001, () => {
-    // console.log('listening on 4000')
+  db = database.db('potter-quotes')
   })
 })
 
+app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true}))
-
-app.listen(4001, function() {
-  // console.log('listening on 3000')
-})
+app.use(bodyParser.json())
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-
+  db.collection('quotes').find().toArray((err, result) => {
+      if (err) return console.log(err)
+    res.render('index.ejs', {quotes: result})
+    })
 })
 app.post('/quotes', (req, res) => {
   db.collection('quotes').insertOne(req.body, (err, result) => {
     if (err) return console.log(err)
-    // console.log('saved to database')
     res.redirect('/')
   })
 })
 
+app.put('/quotes', (req, res) => {
+  db.collection('quotes')
+  .findOneAndUpdate({name: 'voldermort'}, {
+    $set: {
+      name: req.body.name,
+      quote: req.body.quote
+    }
+  }, {
+    sort: {_id: -1},
+    upsert: true
+  }, (err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
 
-
-// app.post('/quotes', (req, res) => {
-//   db.collection('quotes').insertOne(req.body, (err, result) => {
-//     if (err) return console.log(err)
-//
-//     console.log('saved to database')
-//     res.redirect('/')
-//   })
-// })
-//
-// var db
-//
-// MongoClient.connect( `"mongo "mongodb+srv://star-wars-quotes-mgfzj.mongodb.net/test" --username resilientcoders"`, (err, client) => {
-//   if (err) return console.log(err)
-//   db = client.db('star-wars-quotes') // whatever your database name is
-//   app.listen(3000, () => {
-//     console.log('listening on 3000')
-//   })
-// })
+app.delete('/quotes', (req, res) => {
+  db.collection('quotes').findOneAndDelete({name: req.body.name},
+  (err, result) => {
+    if (err) return res.send(500, err)
+    res.send({message: 'Harry deleted'})
+  })
+})
